@@ -4,7 +4,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.widget.Toast;
 
-import com.mx.mnyun.manage.UIManager;
+import com.yanhe.recruit.tv.manage.UIManager;
 
 /**
  * 最大字数限制

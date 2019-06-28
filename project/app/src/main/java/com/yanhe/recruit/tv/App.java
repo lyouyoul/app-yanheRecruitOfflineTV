@@ -26,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.x;
 
+import io.socket.client.Socket;
+
 /**
  * @author yangtxiang
  * @date 2019-05-07
@@ -126,11 +128,11 @@ public class App extends Application {
             Logger.d("网络请求类%s未注册或未定义无参数的构造方法.");
             return;
         }
-        UIManager.showLoading("数据请求中...");
+        //UIManager.showLoading("数据请求中...");
         method.request(http, input, new HttpResult() {
             @Override
             public void onResponse(BaseResult res) {
-                UIManager.hiddenLoading();
+                //UIManager.hiddenLoading();
                 if (res.getStatus() != 200) {
                     Logger.d("网络请求[%s]错误:%s", methodName, res.getMsg());
                     UIManager.showToast(res.getMsg());

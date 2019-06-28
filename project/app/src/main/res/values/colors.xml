@@ -21,4 +21,7 @@
     <color name="base">#138134</color>
     <color name="hotTextColor">#990000</color>
     <color name="contentColor">#333333</color>
+    <color name="azure">#1E9FFF</color>
+    <color name="matteOrange">#FF7E50</color>
+    <color name="darkBlue">#2F4056</color>
 </resources>

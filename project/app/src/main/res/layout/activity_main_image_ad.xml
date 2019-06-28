@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mx="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_browse_fragment"
+    android:name="com.yanhe.recruit.tv.MainFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:deviceIds="tv"
+    android:background="@color/darkBlue"
+    tools:ignore="MergeRootFrame"
+    android:orientation="vertical">
+
+    <!--存放图片展示消息的-->
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/imageAd_banner"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        mx:banner_pointAutoPlayAble="true"
+        mx:banner_pointTopBottomMargin="15dp"
+        mx:banner_pointDrawable="@android:color/transparent"
+        mx:banner_pointContainerBackground="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        android:background="@color/slide"
+        />
+</LinearLayout>
+

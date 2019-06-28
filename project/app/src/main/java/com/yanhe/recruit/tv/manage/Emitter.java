@@ -3,7 +3,8 @@ package com.yanhe.recruit.tv.manage;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.mx.mnyun.App;
+import com.yanhe.recruit.tv.App;
+
 
 /**
  * 消息推送者
