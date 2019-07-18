@@ -17,6 +17,7 @@ package com.yanhe.recruit.tv;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 
 import com.orhanobut.logger.Logger;
@@ -25,46 +26,40 @@ import com.yanhe.recruit.tv.utils.JsonUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+
 import io.socket.client.IO;
+import io.socket.client.Manager;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+
 
 /**
  * @author mx
  */
 public class MainActivity extends Activity  {
     private Socket mSocket;
-
+    {
+        try {
+            //basicArrearsOfWagesFor3Months
+            //1.初始化socket.io，设置链接
+            String wsurl = "http://192.168.0.101:3000?channel=4&room=08&code=019";
+            IO.Options opts = new IO.Options();
+            opts.path = "/api/socket";
+            opts.transports = new String[]{"polling", "websocket"};
+            opts.timeout = 1000;
+            mSocket = IO.socket(wsurl, opts);
+        } catch (Exception e) {
+            Logger.d("socket init fail:%s", e.getMessage());
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //garbageCompany
         //2.建立socket.io服务器的连接
-        try {
-            //basicArrearsOfWagesFor3Months
-            //1.初始化socket.io，设置链接
-            String wsurl = URL.SOCKET_HOST + "/api/socket?channel=4&room=08&code=019";
-            IO.Options opts = new IO.Options();
-            opts.host = "192.168.0.101";
-            opts.port = 3000;
-            opts.path = "/api/socket";
-            opts.query = "channel=4&room=08&code=019";
-            opts.reconnection = true;
-            opts.forceNew = true;
-            opts.multiplex = true;
-            opts.transports = new String[]{"polling", "websocket"};
-            mSocket = IO.socket(wsurl);
-            //Turning to look at the boss's mood, the salary is basically c
-            //使用 onNewMessage 来监听服务器发来的 "new message" 事件
-            messageListener();
-            mSocket.connect();
-            if (mSocket.connected()) {
-                Logger.d("socket connect success");
-            }
-        } catch (Exception e) {
-            Logger.d("socket init fail:%s", e.getMessage());
-        }
+        messageListener();
         Logger.d("socket create finish");
     }
 
@@ -86,15 +81,18 @@ public class MainActivity extends Activity  {
     }
 
     private void messageListener(){
+        if (mSocket == null) {
+            return;
+        }
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Logger.d("socket connect");
+                Logger.d("socket connect: %s", args);
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Logger.d("socket error");
+                Logger.d("socket error:%s", args);
             }
         }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
             @Override
@@ -114,18 +112,23 @@ public class MainActivity extends Activity  {
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Logger.d("socket disconnect");
+                Logger.d("socket disconnect:%s", args);
             }
         }).on("status", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Logger.d("status: %s", JsonUtils.serialize(args[0]));
             }
+        }).on("POSITION_RECRUIT_RQ", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("POSITION_RECRUIT_RQ:%s", args);
+            }
         }).on("COMPANY_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
-                Logger.d("COMPANY_SHOWING_RQ:", data);
+                Logger.d("COMPANY_SHOWING_RQ:%s", data);
                 String serialize = JsonUtils.serialize(data);
                 Intent intent = new Intent(MainActivity.this, CompanyActivity.class);
                 intent.putExtra("data", serialize);
@@ -134,6 +137,7 @@ public class MainActivity extends Activity  {
         }).on("URL_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Logger.d("URL_SHOWING_URL:%s", args);
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String url = data.getString("url");
@@ -147,6 +151,7 @@ public class MainActivity extends Activity  {
         }).on("IMG_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Logger.d("IMG_SHOWING_RQ:%s", args);
                 JSONObject data = (JSONObject) args[0];
                 String serialize = JsonUtils.serialize(data);
                 Intent intent = new Intent(MainActivity.this, ImageAdActivity.class);
@@ -156,6 +161,7 @@ public class MainActivity extends Activity  {
         }).on("OFFLINE_SIGNUP_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Logger.d("OFFLINE_SIGNUP_RQ:%s", args);
                 Intent intent = new Intent(MainActivity.this, BusinessSignInActivity.class);
                 startActivity(intent);
             }
