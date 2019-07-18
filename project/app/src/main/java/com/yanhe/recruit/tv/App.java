@@ -2,6 +2,7 @@ package com.yanhe.recruit.tv;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.yanhe.recruit.tv.base.BaseAndroid;
 import com.yanhe.recruit.tv.base.BaseConfig;
@@ -26,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.x;
 
-import io.socket.client.Socket;
 
 /**
  * @author yangtxiang
@@ -45,14 +45,15 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("recruit-tv", "============ app create");
         mContext = getApplicationContext();
+        initLogger();
         // 注册本地存储
         LocalStoreManager.getInstance().registerStore(new DbLocalStore());
         // 实例网络请求库
         http = new Http(mContext);
         // 注册网络请求类
         HttpRegister.register();
-        initLogger();
         x.Ext.init(this);
         x.Ext.setDebug(true);
         BaseConfig config = new BaseConfig()
@@ -69,25 +70,25 @@ public class App extends Application {
 
 
     public static void loadRemoteVersionInfo() {
-        http.get(URL.APP_VER_URL, null, new ResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, String text) {
-
-            }
-            @Override
-            public void onSuccess(JSONObject json) {
-                Logger.d("remote app ver:%s", json);
-                try {
-                    remoteVersion.setVersionCode(json.getInt("versionCode"));
-                    remoteVersion.setVersion(json.getString("version"));
-                    remoteVersion.setAppId(json.getString("appId"));
-                    remoteVersion.setAppUrl(json.getString("url"));
-                    remoteVersion.setSummery(json.getString("summery"));
-                }catch (JSONException e) {
-                    Logger.d("get version json error: %s", e.getMessage());
-                }
-            }
-        });
+//        http.get(URL.APP_VER_URL, null, new ResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, String text) {
+//
+//            }
+//            @Override
+//            public void onSuccess(JSONObject json) {
+//                Logger.d("remote app ver:%s", json);
+//                try {
+//                    remoteVersion.setVersionCode(json.getInt("versionCode"));
+//                    remoteVersion.setVersion(json.getString("version"));
+//                    remoteVersion.setAppId(json.getString("appId"));
+//                    remoteVersion.setAppUrl(json.getString("url"));
+//                    remoteVersion.setSummery(json.getString("summery"));
+//                }catch (JSONException e) {
+//                    Logger.d("get version json error: %s", e.getMessage());
+//                }
+//            }
+//        });
     }
 
     public static RemoteAppVersion getRemoteVersion() {
@@ -106,7 +107,7 @@ public class App extends Application {
                 // (Optional) Changes the log strategy to print out. Default LogCat
                 .logStrategy(strategy)
                 // (Optional) Global tag for every log. Default PRETTY_LOGGER
-                .tag("mnyun")
+                .tag("RECRUIT-TV")
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
     }

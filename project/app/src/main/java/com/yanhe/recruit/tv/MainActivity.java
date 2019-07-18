@@ -16,25 +16,15 @@ package com.yanhe.recruit.tv;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.yanhe.recruit.tv.model.CompanyShowItem;
+
+import com.orhanobut.logger.Logger;
+import com.yanhe.recruit.tv.constent.URL;
 import com.yanhe.recruit.tv.utils.JsonUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import cn.bingoogolapple.bgabanner.BGABanner;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -45,97 +35,103 @@ import io.socket.emitter.Emitter;
 public class MainActivity extends Activity  {
     private Socket mSocket;
 
-    private Button b1,b2,b3,b4,b5;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //😂
+        //garbageCompany
         //2.建立socket.io服务器的连接
-        mSocket.connect();
-        messageListener();
-        initView();
-    }
-
-    {
         try {
+            //basicArrearsOfWagesFor3Months
             //1.初始化socket.io，设置链接
-             mSocket = IO.socket("http://chat.socket.io");
+            String wsurl = URL.SOCKET_HOST + "/api/socket?channel=4&room=08&code=019";
+            IO.Options opts = new IO.Options();
+            opts.host = "192.168.0.101";
+            opts.port = 3000;
+            opts.path = "/api/socket";
+            opts.query = "channel=4&room=08&code=019";
+            opts.reconnection = true;
+            opts.forceNew = true;
+            opts.multiplex = true;
+            opts.transports = new String[]{"polling", "websocket"};
+            mSocket = IO.socket(wsurl);
+            //Turning to look at the boss's mood, the salary is basically c
             //使用 onNewMessage 来监听服务器发来的 "new message" 事件
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            messageListener();
+            mSocket.connect();
+            if (mSocket.connected()) {
+                Logger.d("socket connect success");
+            }
+        } catch (Exception e) {
+            Logger.d("socket init fail:%s", e.getMessage());
         }
+        Logger.d("socket create finish");
     }
 
-
-    void initView(){
-        b1 = findViewById(R.id.d1);
-        b2 = findViewById(R.id.d2);
-        b3 = findViewById(R.id.d3);
-        b4 = findViewById(R.id.d4);
-        b5 = findViewById(R.id.d5);
-
-        b1.setOnClickListener(mOnClickListener);
-        b2.setOnClickListener(mOnClickListener);
-        b3.setOnClickListener(mOnClickListener);
-        b4.setOnClickListener(mOnClickListener);
-        b5.setOnClickListener(mOnClickListener);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+        Logger.d("socket close====>");
     }
 
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-              switch (v.getId()){
-                  case R.id.d1:
-                      Intent intent = new Intent(MainActivity.this, CompanyActivity.class);
-                      startActivity(intent);
-                      break;
-                  case R.id.d2:
-                      Intent intent2 = new Intent(MainActivity.this, IntentActivity.class);
-                      startActivity(intent2);
-                      break;
-                  case R.id.d3:
-                      Intent intent3 = new Intent(MainActivity.this, ImageAdActivity.class);
-                      intent3.putExtra("type",1);
-                      startActivity(intent3);
-                      break;
-                  case R.id.d5:
-                      Intent intent5 = new Intent(MainActivity.this, ImageAdActivity.class);
-                      intent5.putExtra("type",0);
-                      startActivity(intent5);
-                      break;
-                  case R.id.d4:
-                      Intent intent4 = new Intent(MainActivity.this, BusinessSignInActivity.class);
-                      startActivity(intent4);
-                      break;
-                  default:
-                      break;
-              }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSocket.connect();
+        if (mSocket.connected()) {
+            Logger.d("socket connect success");
         }
-    };
-
+        Logger.d("msocket open=====>");
+    }
 
     private void messageListener(){
-        mSocket.on("company_showing", new Emitter.Listener() {
+        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket connect");
+            }
+        }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket error");
+            }
+        }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket connect error:%s", args);
+            }
+        }).on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket reconnect:%s", args);
+            }
+        }).on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket reconnect error:%s", args);
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("socket disconnect");
+            }
+        }).on("status", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Logger.d("status: %s", JsonUtils.serialize(args[0]));
+            }
+        }).on("COMPANY_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
+                Logger.d("COMPANY_SHOWING_RQ:", data);
                 String serialize = JsonUtils.serialize(data);
                 Intent intent = new Intent(MainActivity.this, CompanyActivity.class);
                 intent.putExtra("data", serialize);
                 startActivity(intent);
-                try {
-                    Object data1 = data.get("data");
-                    if(data1==null){
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
             }
-        }).on("url_showing", new Emitter.Listener() {
+        }).on("URL_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
@@ -148,7 +144,7 @@ public class MainActivity extends Activity  {
                     e.printStackTrace();
                 }
             }
-        }).on("img_showing", new Emitter.Listener() {
+        }).on("IMG_SHOWING_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
@@ -157,7 +153,7 @@ public class MainActivity extends Activity  {
                 intent.putExtra("data", serialize);
                 startActivity(intent);
             }
-        }).on("offline_signup", new Emitter.Listener() {
+        }).on("OFFLINE_SIGNUP_RQ", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Intent intent = new Intent(MainActivity.this, BusinessSignInActivity.class);
@@ -171,9 +167,5 @@ public class MainActivity extends Activity  {
         super.onDestroy();
         /**释放socket*/
         mSocket.disconnect();
-        mSocket.off("company_showing");
-        mSocket.off("url_showing");
-        mSocket.off("img_showing");
-        mSocket.off("offline_signup");
     }
 }

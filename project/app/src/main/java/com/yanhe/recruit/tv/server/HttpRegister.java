@@ -1,5 +1,7 @@
 package com.yanhe.recruit.tv.server;
 
+import com.yanhe.recruit.tv.server.gets.QueryRecruitmentByComId;
+
 /**
  * 网络请求类注册管理器
  * @author yangtxiang
@@ -7,5 +9,6 @@ package com.yanhe.recruit.tv.server;
  */
 public class HttpRegister {
     public static void register () {
+        HttpManager.getInstance().registerGet("QueryRecruitmentByComId", QueryRecruitmentByComId.class);
     }
 }
