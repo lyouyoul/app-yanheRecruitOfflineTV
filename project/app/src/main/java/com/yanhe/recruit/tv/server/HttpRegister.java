@@ -1,5 +1,6 @@
 package com.yanhe.recruit.tv.server;
 
+import com.yanhe.recruit.tv.server.gets.QueryQrCodeBySocket;
 import com.yanhe.recruit.tv.server.gets.QueryRecruitmentByComId;
 
 /**
@@ -10,5 +11,7 @@ import com.yanhe.recruit.tv.server.gets.QueryRecruitmentByComId;
 public class HttpRegister {
     public static void register () {
         HttpManager.getInstance().registerGet("QueryRecruitmentByComId", QueryRecruitmentByComId.class);
+
+        HttpManager.getInstance().registerGet("QueryQrCodeBySocket", QueryQrCodeBySocket.class);
     }
 }

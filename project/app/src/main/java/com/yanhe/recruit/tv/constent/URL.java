@@ -10,7 +10,9 @@ public class URL {
     // 服务器端app版本文件存放路径
     public static final String APP_VER_URL = "";
 
-    public static final String QUERY_RECRUITMENT_BY_COM_ID = "getRecruitCompany";
+    public static final String QUERY_RECRUITMENT_BY_COMID = "getRecruitCompany";
+
+    public static final String QUERY_QR_CODE_BY_SOCKET = "getRecruitCompany";
 
     public static String getUrl(String relativeUrl) {
         return API_URL + relativeUrl;

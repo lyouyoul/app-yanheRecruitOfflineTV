@@ -15,163 +15,33 @@
 package com.yanhe.recruit.tv;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
-
-import com.orhanobut.logger.Logger;
-import com.yanhe.recruit.tv.constent.URL;
-import com.yanhe.recruit.tv.utils.JsonUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URI;
-
-import io.socket.client.IO;
-import io.socket.client.Manager;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
-
 
 /**
  * @author mx
  */
 public class MainActivity extends Activity  {
-    private Socket mSocket;
-    {
-        try {
-            //basicArrearsOfWagesFor3Months
-            //1.初始化socket.io，设置链接
-            String wsurl = "http://192.168.0.101:3000?channel=4&room=08&code=019";
-            IO.Options opts = new IO.Options();
-            opts.path = "/api/socket";
-            opts.transports = new String[]{"polling", "websocket"};
-            opts.timeout = 1000;
-            mSocket = IO.socket(wsurl, opts);
-        } catch (Exception e) {
-            Logger.d("socket init fail:%s", e.getMessage());
-        }
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //garbageCompany
-        //2.建立socket.io服务器的连接
-        messageListener();
-        Logger.d("socket create finish");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mSocket.disconnect();
-        Logger.d("socket close====>");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSocket.connect();
-        if (mSocket.connected()) {
-            Logger.d("socket connect success");
-        }
-        Logger.d("msocket open=====>");
+        App.getSocket().connect();
     }
 
-    private void messageListener(){
-        if (mSocket == null) {
-            return;
-        }
-        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket connect: %s", args);
-            }
-        }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket error:%s", args);
-            }
-        }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket connect error:%s", args);
-            }
-        }).on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket reconnect:%s", args);
-            }
-        }).on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket reconnect error:%s", args);
-            }
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("socket disconnect:%s", args);
-            }
-        }).on("status", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("status: %s", JsonUtils.serialize(args[0]));
-            }
-        }).on("POSITION_RECRUIT_RQ", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("POSITION_RECRUIT_RQ:%s", args);
-            }
-        }).on("COMPANY_SHOWING_RQ", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                Logger.d("COMPANY_SHOWING_RQ:%s", data);
-                String serialize = JsonUtils.serialize(data);
-                Intent intent = new Intent(MainActivity.this, CompanyActivity.class);
-                intent.putExtra("data", serialize);
-                startActivity(intent);
-            }
-        }).on("URL_SHOWING_RQ", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("URL_SHOWING_URL:%s", args);
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String url = data.getString("url");
-                    Intent intent = new Intent(MainActivity.this, IntentActivity.class);
-                    intent.putExtra("url",url);
-                    startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).on("IMG_SHOWING_RQ", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("IMG_SHOWING_RQ:%s", args);
-                JSONObject data = (JSONObject) args[0];
-                String serialize = JsonUtils.serialize(data);
-                Intent intent = new Intent(MainActivity.this, ImageAdActivity.class);
-                intent.putExtra("data", serialize);
-                startActivity(intent);
-            }
-        }).on("OFFLINE_SIGNUP_RQ", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Logger.d("OFFLINE_SIGNUP_RQ:%s", args);
-                Intent intent = new Intent(MainActivity.this, BusinessSignInActivity.class);
-                startActivity(intent);
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getSocket().disconnect();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /**释放socket*/
-        mSocket.disconnect();
     }
+
 }

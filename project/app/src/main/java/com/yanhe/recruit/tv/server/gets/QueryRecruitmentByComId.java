@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class QueryRecruitmentByComId implements HttpMethod {
     @Override
     public void request(Http http, BaseInput input, final HttpResult result) {
-        http.get(URL.getUrl(URL.QUERY_RECRUITMENT_BY_COM_ID), input.asParams(), new Http.ResponseHandler() {
+        http.get(URL.getUrl(URL.QUERY_RECRUITMENT_BY_COMID), input.asParams(), new Http.ResponseHandler() {
             @Override
             public void onSuccess(int statusCode, String text) {
 
