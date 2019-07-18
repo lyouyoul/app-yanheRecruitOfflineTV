@@ -45,6 +45,7 @@
         <activity android:name=".DetailsActivity" />
         <activity android:name=".PlaybackActivity" />
         <activity android:name=".BrowseErrorActivity" />
+        <service android:name=".service.SocketService" />
     </application>
 
 </manifest>

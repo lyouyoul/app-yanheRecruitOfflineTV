@@ -2,8 +2,11 @@ package com.yanhe.recruit.tv;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -22,6 +25,7 @@ public class QrCodeActivity extends Activity {
         setContentView(R.layout.activity_qr_code);
         initView();
     }
+
 
     private void initView(){
         String extra = getIntent().getStringExtra("id");

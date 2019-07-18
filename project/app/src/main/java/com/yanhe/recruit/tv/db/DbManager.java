@@ -16,7 +16,7 @@ public class DbManager extends Object {
     private boolean isDisposing = false;
 
     public DbManager () {
-        dbHelper = new DbHelper(App.getContext());
+        dbHelper = new DbHelper(App.getContext().getApplicationContext());
         db = dbHelper.getWritableDatabase();
         isDisposing = false;
     }
