@@ -36,8 +36,6 @@ public class QrCodeActivity extends Activity {
         tv_qrcode = findViewById(R.id.tv_qrcode);
         tv_qrcode.setImageBitmap(qrCodeBitmap);
         int screenHeight = WidthHeightUtils.getScreenHeight(this);
-        ScreenUtils screenUtils = new ScreenUtils(this);
-
         ViewGroup.LayoutParams params = tv_qrcode.getLayoutParams();
         params.height=screenHeight/3;
         params.width=params.height;

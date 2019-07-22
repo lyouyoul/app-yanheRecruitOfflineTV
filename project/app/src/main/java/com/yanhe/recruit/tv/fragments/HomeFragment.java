@@ -1,6 +1,7 @@
 package com.yanhe.recruit.tv.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -8,12 +9,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.orhanobut.logger.Logger;
 import com.yanhe.recruit.tv.R;
+import com.yanhe.recruit.tv.manage.LocalStoreManager;
+import com.yanhe.recruit.tv.service.SocketBinder;
+import com.yanhe.recruit.tv.utils.QRCodeUtil;
 
 
 public class HomeFragment extends Fragment {
+    private ImageView iv_qrcode;
     private View root;
 
     public HomeFragment() {
@@ -50,9 +56,16 @@ public class HomeFragment extends Fragment {
     }
 
     protected void initView() {
-
+        iv_qrcode = findViewById(R.id.iv_qrcode);
+        initDate();
     }
 
+    protected void initDate() {
+        LocalStoreManager store = LocalStoreManager.getInstance();
+        String socketId = store.read("socketId", "").toString();
+        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(socketId, 500, 500);
+        iv_qrcode.setImageBitmap(qrCodeBitmap);
+    }
 
     @Override
     public void onAttach(Context context) {

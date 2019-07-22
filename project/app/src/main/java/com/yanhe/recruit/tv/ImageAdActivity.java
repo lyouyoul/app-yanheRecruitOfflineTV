@@ -37,7 +37,7 @@ public class ImageAdActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_image_ad);
+        setContentView(R.layout.fragment_image_ad);
         //setContentView(R.layout.activity_main);
         initViewAd();
     }

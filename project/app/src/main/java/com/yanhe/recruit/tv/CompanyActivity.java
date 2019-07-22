@@ -65,7 +65,7 @@ public class CompanyActivity extends Activity {
         String recruitId = "1";
         QueryById(new RecruitmentInput(companyId,recruitId));
         if(companyData!=null){
-            recruitmentData = companyData.getStations();
+            recruitmentData =Arrays.asList(companyData.getStations()) ;
         }
     }
 
@@ -82,7 +82,7 @@ public class CompanyActivity extends Activity {
                     String recruitId = (String)data.get("recruitId");
                     QueryById(new RecruitmentInput(companyId,recruitId));
                     if(companyData!=null){
-                        recruitmentData = companyData.getStations();
+                        recruitmentData =Arrays.asList(companyData.getStations()) ;
                     }
                 }else{
                     JSONObject json = gson.fromJson(data1, JSONObject.class);
@@ -100,10 +100,10 @@ public class CompanyActivity extends Activity {
     }
 
     private void QueryById (RecruitmentInput input) {
-        App.httpGet("QueryRecruitmentByComId",input, new HttpResult<CompanyResult>() {
+        App.httpGet("QueryRecruitmentByRecruitIdAndCompanyId",input, new HttpResult<CompanyResult>() {
             @Override
             public void onResponse(CompanyResult result) {
-                companyData = result.getData();
+                companyData = result.getContext();
             }
         });
     }

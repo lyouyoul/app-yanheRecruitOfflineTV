@@ -12,7 +12,11 @@ public class URL {
 
     public static final String QUERY_RECRUITMENT_BY_COMID = "getRecruitCompany";
 
+    public static final String QUERY_COMPANY_BY_COMID = "getCompanyBaseInfo";
+
     public static final String QUERY_QR_CODE_BY_SOCKET = "getRecruitCompany";
+
+    public static final String QUERY_RECRUIT_POSITION_QRCODE = "getRecruitPositionQrcode";
 
     public static String getUrl(String relativeUrl) {
         return API_URL + relativeUrl;

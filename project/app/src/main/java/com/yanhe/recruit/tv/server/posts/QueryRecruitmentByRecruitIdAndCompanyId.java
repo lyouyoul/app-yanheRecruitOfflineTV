@@ -1,4 +1,4 @@
-package com.yanhe.recruit.tv.server.gets;
+package com.yanhe.recruit.tv.server.posts;
 
 import com.yanhe.recruit.tv.constent.URL;
 import com.yanhe.recruit.tv.server.inf.HttpMethod;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
  * 根据企业id获得招聘信息
  * @author mx
  */
-public class QueryRecruitmentByComId implements HttpMethod {
+public class QueryRecruitmentByRecruitIdAndCompanyId implements HttpMethod {
     @Override
     public void request(Http http, BaseInput input, final HttpResult result) {
         http.get(URL.getUrl(URL.QUERY_RECRUITMENT_BY_COMID), input.asParams(), new Http.ResponseHandler() {

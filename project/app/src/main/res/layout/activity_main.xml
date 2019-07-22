@@ -10,53 +10,16 @@
         android:name="com.yanhe.recruit.tv.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/darkBlue"
         android:orientation="vertical"
         tools:context=".MainActivity"
         tools:deviceIds="tv"
         tools:ignore="MergeRootFrame">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/d1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="招聘信息" />
-
-            <Button
-                android:id="@+id/d2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="地址展示消息" />
-
-            <Button
-                android:id="@+id/d3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="图片展示消息上下" />
-
-            <Button
-                android:id="@+id/d5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="图片展示消息左右" />
-
-            <Button
-                android:id="@+id/d4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="企业签到消息" />
-        </LinearLayout>
         <FrameLayout
             android:id="@+id/fl_client"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#000"
+            android:background="@color/darkBlue"
             >
         </FrameLayout>
     </LinearLayout>

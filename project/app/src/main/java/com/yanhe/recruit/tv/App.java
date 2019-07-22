@@ -156,8 +156,9 @@ public class App extends Application {
         method.request(http, input, new HttpResult() {
             @Override
             public void onResponse(BaseResult res) {
+                //Logger.d("========>res:%s", res.getContext());
                 //UIManager.hiddenLoading();
-                if (res.getStatus() != 200) {
+                if (res.getStatus() != 0) {
                     Logger.d("网络请求[%s]错误:%s", methodName, res.getMsg());
                     UIManager.showToast(res.getMsg());
                 } else {

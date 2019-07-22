@@ -13,15 +13,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.yanhe.recruit.tv.R;
+import com.yanhe.recruit.tv.manage.LocalStoreManager;
 import com.yanhe.recruit.tv.utils.QRCodeUtil;
+import com.yanhe.recruit.tv.utils.WidthHeightUtils;
 
 
 public class ConfigFragment extends Fragment {
+    static final Bitmap QR_CODE_BITMAP = null;
     private static final String ARG_PARAM1 = "qrcode";
     private String mQrcode;
     private View root;
     private ImageView ivQrCode;
-
     public ConfigFragment() {
         // Required empty public constructor
     }
@@ -29,6 +31,8 @@ public class ConfigFragment extends Fragment {
     public static ConfigFragment newInstance(String qrcode) {
         ConfigFragment fragment = new ConfigFragment();
         Bundle args = new Bundle();
+        LocalStoreManager store = LocalStoreManager.getInstance();
+        store.write("qrcode",qrcode);
         args.putString(ARG_PARAM1, qrcode);
         fragment.setArguments(args);
         return fragment;
@@ -57,9 +61,19 @@ public class ConfigFragment extends Fragment {
     }
 
     protected void initView() {
+        LocalStoreManager store = LocalStoreManager.getInstance();
+        if(mQrcode==null){
+            mQrcode = store.read("qrcode","").toString();
+        }
         ivQrCode = findViewById(R.id.iv_qrcode);
         Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mQrcode, 500, 500);
         ivQrCode.setImageBitmap(qrCodeBitmap);
+        int screenHeight = WidthHeightUtils.getScreenHeight(getContext());
+        ViewGroup.LayoutParams params = ivQrCode.getLayoutParams();
+        params.height=screenHeight/3;
+        params.width=params.height;
+        ivQrCode.setLayoutParams(params);
+
     }
 
 

@@ -1,7 +1,8 @@
 package com.yanhe.recruit.tv.server;
 
-import com.yanhe.recruit.tv.server.gets.QueryQrCodeBySocket;
-import com.yanhe.recruit.tv.server.gets.QueryRecruitmentByComId;
+import com.yanhe.recruit.tv.server.posts.QueryCompanyByComId;
+import com.yanhe.recruit.tv.server.posts.QueryRecruitPositionQrcode;
+import com.yanhe.recruit.tv.server.posts.QueryRecruitmentByRecruitIdAndCompanyId;
 
 /**
  * 网络请求类注册管理器
@@ -10,8 +11,10 @@ import com.yanhe.recruit.tv.server.gets.QueryRecruitmentByComId;
  */
 public class HttpRegister {
     public static void register () {
-        HttpManager.getInstance().registerGet("QueryRecruitmentByComId", QueryRecruitmentByComId.class);
+        HttpManager.getInstance().registerPost("QueryRecruitmentByRecruitIdAndCompanyId", QueryRecruitmentByRecruitIdAndCompanyId.class);
 
-        HttpManager.getInstance().registerGet("QueryQrCodeBySocket", QueryQrCodeBySocket.class);
+        HttpManager.getInstance().registerPost("QueryCompanyByComId", QueryCompanyByComId.class);
+
+        HttpManager.getInstance().registerPost("QueryRecruitPositionQrcode", QueryRecruitPositionQrcode.class);
     }
 }

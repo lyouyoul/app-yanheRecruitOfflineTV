@@ -14,25 +14,31 @@
 
 package com.yanhe.recruit.tv;
 
-import android.app.Activity;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.yanhe.recruit.tv.constent.BroadcastActions;
+import com.yanhe.recruit.tv.fragments.CompanyFragment;
 import com.yanhe.recruit.tv.fragments.ConfigFragment;
 import com.yanhe.recruit.tv.fragments.HomeFragment;
+import com.yanhe.recruit.tv.fragments.ImageAdFragment;
+import com.yanhe.recruit.tv.fragments.IntentFragment;
+import com.yanhe.recruit.tv.fragments.OfflineSignupRQFragment;
+import com.yanhe.recruit.tv.fragments.PositionRecruitRQFragment;
 import com.yanhe.recruit.tv.manage.LocalStoreManager;
 import com.yanhe.recruit.tv.service.SocketBinder;
 import com.yanhe.recruit.tv.service.SocketService;
@@ -58,8 +64,23 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BroadcastActions.TV_CONFIG_MSG);
         filter.addAction(BroadcastActions.NEED_CONFIG_MSG);
+        filter.addAction(BroadcastActions.POSITION_RECRUIT_RQ_MSG);
+        filter.addAction(BroadcastActions.COMPANY_SHOWING_RQ_MSG);
+        filter.addAction(BroadcastActions.OFFLINE_SIGNUP_RQ_MSG);
+        filter.addAction(BroadcastActions.URL_SHOWING_RQ_MSG);
+        filter.addAction(BroadcastActions.IMG_SHOWING_RQ_MSG);
         socketReceiver = new SocketReceiver();
         registerReceiver(socketReceiver, filter);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        }
     }
 
     protected void initView() {
@@ -68,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
         mFragmentManager = getSupportFragmentManager();
         mTransation = mFragmentManager.beginTransaction();
         mTransation.add(R.id.fl_client, homeFragment).commit();
+       /* String anim ="1";
+        String sleep = "1000";
+        String timeout = "6000";
+        String imgs = "[{\"url\":\"https://img-bss.csdn.net/1563440498324.jpg\"},{\"url\":\"https://img-bss.csdn.net/1563440498324.jpg\"}]";
+        Logger.d("anim:%s, sleep: %s , timeout: %s ,imgs:%s", anim, sleep,timeout,imgs);
+        ImageAdFragment imageAdFragment = ImageAdFragment.newInstance(anim,sleep,timeout,imgs);
+        mFragmentManager = MainActivity.this.getSupportFragmentManager();
+        mTransation = mFragmentManager.beginTransaction();
+        mTransation.replace(R.id.fl_client, imageAdFragment).commit();*/
     }
 
     @Override
@@ -106,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     protected class SocketReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            LocalStoreManager store = LocalStoreManager.getInstance();
             Logger.d("socketReceiver recv:%s", intent.getAction());
             String action = intent.getAction();
             Bundle data = intent.getExtras();
@@ -115,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                     String code = data.getString("code");
                     Logger.d("roomCode:%s, code: %s", roomCode, code);
                     if (!StringUtils.isEmpty(roomCode) && !StringUtils.isEmpty(code)) {
-                        LocalStoreManager store = LocalStoreManager.getInstance();
                         store.write("room", roomCode);
                         store.write("position", code);
                         if (mSocketBinder != null) {
@@ -127,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case BroadcastActions.NEED_CONFIG_MSG:
+                    store.write("previousPage",BroadcastActions.NEED_CONFIG_MSG);
                     String socketId = data.getString("socketId");
                     Logger.d("socketReceiver socketId:%s", socketId);
                     ConfigFragment configFragment = ConfigFragment.newInstance(socketId);
@@ -134,7 +165,59 @@ public class MainActivity extends AppCompatActivity {
                     mTransation = mFragmentManager.beginTransaction();
                     mTransation.replace(R.id.fl_client, configFragment).commit();
                     break;
-                    default:
+                case BroadcastActions.POSITION_RECRUIT_RQ_MSG:
+                    store.write("previousPage",BroadcastActions.POSITION_RECRUIT_RQ_MSG);
+                    String recruitId = data.getString("recruitId");
+                    String companyId = data.getString("companyId");
+                    Logger.d("recruitId:%s, companyId: %s", recruitId, companyId);
+                    PositionRecruitRQFragment rqFragment = PositionRecruitRQFragment.newInstance(recruitId,companyId);
+                    mFragmentManager = MainActivity.this.getSupportFragmentManager();
+                    mTransation = mFragmentManager.beginTransaction();
+                    mTransation.replace(R.id.fl_client, rqFragment).commit();
+                    break;
+                case BroadcastActions.OFFLINE_SIGNUP_RQ_MSG:
+                    store.write("previousPage",BroadcastActions.OFFLINE_SIGNUP_RQ_MSG);
+                    String recruitIdOffline = data.getString("recruitId");
+                    String companyIdOffline = data.getString("companyId");
+                    Logger.d("recruitId:%s, companyId: %s", recruitIdOffline, companyIdOffline);
+                    OfflineSignupRQFragment offlineSignupRQFragment = OfflineSignupRQFragment.newInstance(recruitIdOffline,companyIdOffline);
+                    mFragmentManager = MainActivity.this.getSupportFragmentManager();
+                    mTransation = mFragmentManager.beginTransaction();
+                    mTransation.replace(R.id.fl_client, offlineSignupRQFragment).commit();
+                    break;
+                case BroadcastActions.COMPANY_SHOWING_RQ_MSG:
+                    store.write("previousPage",BroadcastActions.COMPANY_SHOWING_RQ_MSG);
+                    String recruitIdCom = data.getString("recruitId");
+                    String companyIdCom = data.getString("companyId");
+                    String contextCom = data.getString("context");
+                    Logger.d("recruitId:%s, companyId: %s , context: %s", recruitIdCom, companyIdCom,contextCom);
+                    CompanyFragment companyFragment = CompanyFragment.newInstance(recruitIdCom,companyIdCom,contextCom);
+                    mFragmentManager = MainActivity.this.getSupportFragmentManager();
+                    mTransation = mFragmentManager.beginTransaction();
+                    mTransation.replace(R.id.fl_client, companyFragment).commit();
+                    break;
+                case BroadcastActions.URL_SHOWING_RQ_MSG:
+                    store.write("previousPage",BroadcastActions.URL_SHOWING_RQ_MSG);
+                    String url = data.getString("url");
+                    Logger.d("url:%s", url);
+                    IntentFragment intentFragment = IntentFragment.newInstance(url);
+                    mFragmentManager = MainActivity.this.getSupportFragmentManager();
+                    mTransation = mFragmentManager.beginTransaction();
+                    mTransation.replace(R.id.fl_client, intentFragment).commit();
+                    break;
+                case BroadcastActions.IMG_SHOWING_RQ_MSG:
+                    String anim = data.getString("anim");
+                    String sleep = data.getString("sleep");
+                    String timeout = data.getString("timeout");
+                    String imgs = data.getString("imgs");
+                    Logger.d("anim:%s, sleep: %s , timeout: %s ,imgs:%s", anim, sleep,timeout,imgs);
+                    ImageAdFragment imageAdFragment = ImageAdFragment.newInstance(anim,sleep,timeout,imgs);
+                    mFragmentManager = MainActivity.this.getSupportFragmentManager();
+                    mTransation = mFragmentManager.beginTransaction();
+                    mTransation.replace(R.id.fl_client, imageAdFragment).commit();
+                    break;
+                default:
+                    break;
             }
         }
     }

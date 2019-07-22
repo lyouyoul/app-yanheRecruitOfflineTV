@@ -10,28 +10,28 @@ import org.json.JSONObject;
  * @param <T>
  */
 public class BaseResult<T extends BaseData> {
-    private T      data;
+    private T      context;
     private int    status;
     private String msg;
 
     public BaseResult() {
-        this.setData(null);
+        this.setContext(null);
         this.setMsg("");
         this.setStatus(0);
     }
 
-    public BaseResult(String msg, int status, T data) {
+    public BaseResult(String msg, int status, T context) {
         this.setMsg(msg);
         this.setStatus(status);
-        this.setData(data);
+        this.setContext(context);
     }
 
     /**
      * 获取返回数据
      * @return
      */
-    public T getData () {
-        return data;
+    public T getContext () {
+        return context;
     }
 
     /** 200 正常, 403 权限, 401 */ /**
@@ -50,8 +50,8 @@ public class BaseResult<T extends BaseData> {
         return msg;
     }
 
-    public BaseResult setData (T data) {
-        this.data = data;
+    public BaseResult setContext (T context) {
+        this.context = context;
         return this;
     }
 
@@ -70,24 +70,24 @@ public class BaseResult<T extends BaseData> {
             if (json == null) {
                 return;
             }
-            this.status = json.has("status") ? json.getInt("status") : 200;
+            this.status = json.has("status") ? json.getInt("status") : 0;
             this.msg = json.has("msg") ? json.getString("msg") : "";
-            if (json.has("data") && json.get("data") != JSONObject.NULL) {
-                Object objData = json.get("data");
+            if (json.has("context") && json.get("context") != JSONObject.NULL) {
+                Object objData = json.get("context");
                 Logger.d("objData type is: %s", objData.getClass());
                 if (objData.getClass() == String.class) {
                     JSONObject jsData = new JSONObject();
                     jsData.put("string", objData.toString());
-                    data.parseJson(jsData);
+                    context.parseJson(jsData);
                 }else if(objData.getClass() == JSONArray.class){
                     if(objData !=null){
-                        data.parseJson(objData);
+                        context.parseJson(objData);
                     }
                 }
                 else {
-                    JSONObject jsData = json.getJSONObject("data");
-                    if (data != null) {
-                        data.parseJson(jsData);
+                    JSONObject jsData = json.getJSONObject("context");
+                    if (context != null) {
+                        context.parseJson(jsData);
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class BaseResult<T extends BaseData> {
     @Override
     public String toString () {
         return "BaseResult{" +
-                "data=" + data +
+                "context=" + context +
                 ", status=" + status +
                 ", msg='" + msg + '\'' +
                 '}';

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -83,7 +84,7 @@ public class Http extends Object {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Logger.d("%s %s recv: %s,%s", method.toString(), url, statusCode, responseString);
+                //Logger.d("%s %s recv: %s,%s", method.toString(), url, statusCode, responseString);
                 if (response != null) {
                     response.onSuccess(statusCode, responseString);
                     List<Header> mHeaders = Arrays.asList(headers);

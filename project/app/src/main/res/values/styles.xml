@@ -16,13 +16,13 @@
     </style>
 
     <style name="companyShowFontStyle" parent="@android:style/Theme">
-        <item name="android:textSize">23sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/matteOrange</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="companyShowFontStyle1" parent="@android:style/Theme">
-        <item name="android:textSize">23sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

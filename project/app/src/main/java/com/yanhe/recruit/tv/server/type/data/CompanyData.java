@@ -19,14 +19,24 @@ public class CompanyData extends BaseData {
     private String telPhone;  //电话
     private String faceImg; //头图
     private String email; //邮箱
-    private List<RecruitmentData> stations;
+    private Boolean isSignUp; //是否签到
+    private RecruitmentData[] stations;
 
-    public List<RecruitmentData> getStations() {
+
+    public RecruitmentData[] getStations() {
         return stations;
     }
 
-    public void setStations(List<RecruitmentData> stations) {
+    public void setStations(RecruitmentData[] stations) {
         this.stations = stations;
+    }
+
+    public Boolean getSignUp() {
+        return isSignUp;
+    }
+
+    public void setSignUp(Boolean signUp) {
+        isSignUp = signUp;
     }
 
     public String getCode() {
