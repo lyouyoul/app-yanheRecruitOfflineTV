@@ -140,12 +140,14 @@ public class CompanyFragment extends Fragment {
 
     private void QueryById () {
         final LocalStoreManager store = LocalStoreManager.getInstance();
-        RecruitmentInput recruitmentInput = new RecruitmentInput(recruitId,companyId);
+        Logger.d("new RecruitmentInput(recruitId,companyId) %s,%s",recruitId,companyId);
+        RecruitmentInput recruitmentInput = new RecruitmentInput(companyId,recruitId);
         App.httpPost("QueryRecruitmentByRecruitIdAndCompanyId",recruitmentInput, new HttpResult<CompanyResult>() {
             @Override
             public void onResponse(CompanyResult result) {
                 companyData = result.getContext();
                 if(companyData!=null){
+                    Logger.d("========>companyData %s",companyData);
                     recruitmentDatas = Arrays.asList(companyData.getStations());
                     store.write("companyData", JsonUtils.serialize(companyData));
                 }

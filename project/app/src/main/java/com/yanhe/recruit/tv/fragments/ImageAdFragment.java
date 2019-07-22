@@ -176,11 +176,6 @@ public class ImageAdFragment extends Fragment {
                                .commit();
                        break;
                 }
-              /*  getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fl_client, new CompanyFragment())
-                        .addToBackStack(null)
-                        .commit();*/
                 }
         }, Integer.valueOf(timeout));
     }

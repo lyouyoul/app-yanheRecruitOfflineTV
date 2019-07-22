@@ -58,7 +58,7 @@ public class OfflineSignupRQFragment extends Fragment {
             recruitId = store.read("recruitIdOF","").toString();
             companyId = store.read("companyIdOF","").toString();
         }
-        RecruitmentInput recruitmentInput = new RecruitmentInput(recruitId,companyId);
+        RecruitmentInput recruitmentInput = new RecruitmentInput(companyId,recruitId);
         App.httpPost("QueryRecruitmentByRecruitIdAndCompanyId",recruitmentInput, new HttpResult<CompanyResult>() {
             @Override
             public void onResponse(CompanyResult result) {

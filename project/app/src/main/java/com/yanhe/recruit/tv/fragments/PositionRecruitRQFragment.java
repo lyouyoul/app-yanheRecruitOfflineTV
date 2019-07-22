@@ -1,9 +1,6 @@
 package com.yanhe.recruit.tv.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -20,8 +17,6 @@ import com.bumptech.glide.Glide;
 import com.orhanobut.logger.Logger;
 import com.yanhe.recruit.tv.App;
 import com.yanhe.recruit.tv.R;
-import com.yanhe.recruit.tv.constent.BroadcastActions;
-import com.yanhe.recruit.tv.constent.URL;
 import com.yanhe.recruit.tv.manage.LocalStoreManager;
 import com.yanhe.recruit.tv.server.inf.HttpResult;
 import com.yanhe.recruit.tv.server.type.data.CompanyData;
@@ -31,6 +26,7 @@ import com.yanhe.recruit.tv.server.type.input.QueryRecruitPositionQrcodeInput;
 import com.yanhe.recruit.tv.server.type.result.CompanyResult;
 import com.yanhe.recruit.tv.server.type.result.QueryQrcodeResult;
 import com.yanhe.recruit.tv.utils.JsonUtils;
+import com.yanhe.recruit.tv.utils.StringUtils;
 
 public class PositionRecruitRQFragment extends Fragment {
     private static final String ARG_PARAM1 = "recruitId";
@@ -90,7 +86,7 @@ public class PositionRecruitRQFragment extends Fragment {
             companyId = store.read("companyIdPR","").toString();
         }
         if(recruitId==null){
-            recruitId = store.read("companyIdPR","").toString();
+            recruitId = store.read("recruitIdPR","").toString();
         }
         tv_noinfo = findViewById(R.id.tv_noinfo);
         tv_info = findViewById(R.id.tv_info);
@@ -101,11 +97,15 @@ public class PositionRecruitRQFragment extends Fragment {
         tv_phone = findViewById(R.id.tv_phone);
         tv_email = findViewById(R.id.tv_email);
         tv_adress = findViewById(R.id.tv_adress);
-        if(companyId.isEmpty()){
+        Logger.d("====================>companyId %s",companyId);
+        if(StringUtils.isEmpty(companyId)){
             tv_noinfo.setVisibility(View.VISIBLE);
             tv_info.setVisibility(View.GONE);
+        }else{
+            tv_info.setVisibility(View.VISIBLE);
+            tv_noinfo.setVisibility(View.GONE);
         }
-        tv_noinfo.setVisibility(View.GONE);
+
         initDate();
     }
 
@@ -128,21 +128,24 @@ public class PositionRecruitRQFragment extends Fragment {
                                 .replace(R.id.fl_client, new CompanyFragment())
                                 .addToBackStack(null)
                                 .commit();
+                    }else{
+                        company_name.setText(companyData.getName());
+                        Glide.with(getContext()).load(companyData.getFaceImg()).into(iv_faceImg);
+                        tv_contact.setText(companyData.getContactPer());
+                        tv_phone.setText(companyData.getTelPhone());
+                        tv_phone.setText(companyData.getEmail());
+                        tv_adress.setText(companyData.getAddress());
+                        QueryQrcode();
                     }
-                    company_name.setText(companyData.getName());
-                    Glide.with(getContext()).load(companyData.getFaceImg()).into(iv_faceImg);
-                    tv_contact.setText(companyData.getContactPer());
-                    tv_phone.setText(companyData.getTelPhone());
-                    tv_phone.setText(companyData.getEmail());
-                    tv_adress.setText(companyData.getAddress());
-                    QueryQrcode();
+
+
                 }
             }
         });
     }
 
     private void QueryQrcode(){
-        LocalStoreManager storeManager = LocalStoreManager.getInstance();
+         LocalStoreManager storeManager = LocalStoreManager.getInstance();
         String room = storeManager.read("room", "").toString();
         String position = storeManager.read("position", "").toString();
         QueryRecruitPositionQrcodeInput input = new QueryRecruitPositionQrcodeInput(recruitId,room,position);
@@ -152,24 +155,9 @@ public class PositionRecruitRQFragment extends Fragment {
                 QueryQrcodeData queryQrcodeData = result.getContext();
                 String qrcode = queryQrcodeData.getQrcode();
                 String[] split = qrcode.split(",");
-                Bitmap bitmap = stringtoBitmap(split[1]);
-                sign_in_qr_code.setImageBitmap(bitmap);
+                Glide.with(getActivity()).load(Base64.decode(split[1], Base64.DEFAULT)).into(sign_in_qr_code);
             }
         });
-    }
-
-    private Bitmap stringtoBitmap(String string){
-        //将字符串转换成Bitmap类型
-        Bitmap bitmap=null;
-        try {
-            byte[]bitmapArray;
-            bitmapArray= Base64.decode(string, Base64.DEFAULT);
-            bitmap= BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 
     @Override
