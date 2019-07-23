@@ -9,7 +9,7 @@
     android:background="@color/darkBlue"
     tools:ignore="MergeRootFrame"
     android:orientation="vertical">
-    <LinearLayout
+    <!--<LinearLayout
         android:background="@color/azure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="沿河雷氏照明有限公司" />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout>-->
     <GridLayout
         android:layout_weight="1"
         android:layout_marginTop="20dp"

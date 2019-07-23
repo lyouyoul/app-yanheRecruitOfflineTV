@@ -11,6 +11,20 @@
     android:background="@color/darkBlue"
     tools:ignore="MergeRootFrame"
     android:orientation="vertical">
+    <LinearLayout
+        android:background="@color/azure"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        >
+        <TextView
+            android:id="@+id/company_name"
+            style="@style/companyShowFontStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="沿河雷氏照明有限公司" />
+    </LinearLayout>
     <!--存放招聘页面的ViewPager-->
     <cn.bingoogolapple.bgabanner.BGABanner
         android:layout_weight="1"
@@ -72,7 +86,7 @@
                 style="@style/companyShowFontStyle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="123456678911"
+                android:text="1888888888"
                 />
         </LinearLayout>
         <LinearLayout

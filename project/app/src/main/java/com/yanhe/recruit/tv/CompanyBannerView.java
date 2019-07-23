@@ -14,8 +14,6 @@ import com.yanhe.recruit.tv.utils.StringUtils;
  * @author mx
  */
 public class CompanyBannerView extends LinearLayout {
-    private TextView tv_num;
-    private TextView company_name;
     private TextView tv_job;
     private TextView tv_numberOfPeople;
     private TextView tv_treatment;
@@ -26,8 +24,6 @@ public class CompanyBannerView extends LinearLayout {
     public CompanyBannerView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.activity_company_item, this, true);
-        tv_num = (TextView) findViewById(R.id.tv_num);
-        company_name = (TextView) findViewById(R.id.company_name);
         tv_job = (TextView) findViewById(R.id.tv_job);
         tv_numberOfPeople = (TextView) findViewById(R.id.tv_numberOfPeople);
         tv_treatment = (TextView) findViewById(R.id.tv_treatment);
@@ -37,27 +33,11 @@ public class CompanyBannerView extends LinearLayout {
 
     }
 
-    /**测试*/
-    public void bindDataTest(CompanyShowItem item) {
-        if (item == null) {
-            setVisibility(GONE);
-            return;
-        }
-        tv_num.setText(String.valueOf(item.getIndex()));
-        company_name.setText(item.getComName());
-        tv_job.setText(item.getJob());
-        tv_numberOfPeople.setText(String.valueOf(item.getNumberOfPeople()));
-        tv_treatment.setText(item.getTreatment());
-        tv_claim.setText(item.getClaim());
-    }
-
     public void bindData(RecruitmentData item) {
         if (item == null) {
             setVisibility(GONE);
             return;
         }
-        tv_num.setText(String.valueOf(item.getIndex()));
-        company_name.setText(item.getCompanyName());
         tv_job.setText(item.getName());
         tv_numberOfPeople.setText(String.valueOf(item.getNumber()));
         tv_workHours.setText(item.getWorkHours());

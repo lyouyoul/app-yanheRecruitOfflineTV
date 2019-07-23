@@ -47,11 +47,14 @@ public class CompanyFragment extends Fragment {
     private String companyId;
     private String context;
     private View root;
+    /**公司名称*/
+    private TextView company_name;
     /**联系人*/
     private TextView tv_contact;
     /**联系电话*/
     private TextView tv_phone;
     private TextView tv_email;
+    private TextView tv_adress;
     /**公司信息*/
     private CompanyData companyData;
     /**招聘信息*/
@@ -91,11 +94,13 @@ public class CompanyFragment extends Fragment {
     }
 
     private void initView(){
+        company_name = findViewById(R.id.company_name);
         tv_contact = findViewById(R.id.tv_contact);
         tv_phone = findViewById(R.id.tv_phone);
         tv_email = findViewById(R.id.tv_email);
+        tv_adress = findViewById(R.id.tv_adress);
         companyBanner = (BGABanner) findViewById(R.id.company_banner);
-        companyBanner.setAutoPlayInterval(60000);
+        companyBanner.setAutoPlayInterval(20000);
         initData();
         initBannerView();
     }
@@ -103,12 +108,8 @@ public class CompanyFragment extends Fragment {
     void initBannerView(){
         List<View> views = new ArrayList<>();
         if (recruitmentDatas != null){
-            int i=0;
             for (RecruitmentData recruitmentData : recruitmentDatas) {
-                i++;
                 CompanyBannerView companyBannerView = new CompanyBannerView(getContext());
-                recruitmentData.setIndex(i);
-                recruitmentData.setCompanyName(companyData.getName());
                 companyBannerView.bindData(recruitmentData);
                 views.add(companyBannerView);
             }
@@ -123,6 +124,10 @@ public class CompanyFragment extends Fragment {
             companyData = gson.fromJson(store.read("companyData", null).toString(),CompanyData.class);
             if(companyData!=null){
                 recruitmentDatas =Arrays.asList(this.companyData.getStations()) ;
+                company_name.setText(companyData.getName());
+                tv_contact.setText(companyData.getContent());
+                tv_email.setText(companyData.getEmail());
+                tv_adress.setText(companyData.getAddress());
             }else{
                 QueryById();
             }
@@ -135,6 +140,10 @@ public class CompanyFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            company_name.setText(companyData.getName());
+            tv_contact.setText(companyData.getContent());
+            tv_email.setText(companyData.getEmail());
+            tv_adress.setText(companyData.getAddress());
         }
     }
 
@@ -150,6 +159,10 @@ public class CompanyFragment extends Fragment {
                     Logger.d("========>companyData %s",companyData);
                     recruitmentDatas = Arrays.asList(companyData.getStations());
                     store.write("companyData", JsonUtils.serialize(companyData));
+                    company_name.setText(companyData.getName());
+                    tv_contact.setText(companyData.getContent());
+                    tv_email.setText(companyData.getEmail());
+                    tv_adress.setText(companyData.getAddress());
                 }
             }
         });
