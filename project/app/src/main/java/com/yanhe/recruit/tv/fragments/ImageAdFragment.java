@@ -157,7 +157,7 @@ public class ImageAdFragment extends Fragment {
                     case BroadcastActions.COMPANY_SHOWING_RQ_MSG:
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fl_client, new ConfigFragment())
+                                .replace(R.id.fl_client, new CompanyFragment())
                                 .addToBackStack(null)
                                 .commit();
                         break;
@@ -171,7 +171,7 @@ public class ImageAdFragment extends Fragment {
                    default:
                        getActivity().getSupportFragmentManager()
                                .beginTransaction()
-                               .replace(R.id.fl_client, new ConfigFragment())
+                               .replace(R.id.fl_client, new PositionRecruitRQFragment())
                                .addToBackStack(null)
                                .commit();
                        break;
