@@ -26,8 +26,8 @@ public class SocketService extends Service {
     String mCode;
     {
         LocalStoreManager store = LocalStoreManager.getInstance();
-        /*store.write("room", "08");
-        store.write("position", "019");*/
+        store.write("room", "08");
+        store.write("position", "019");
         mRoom = store.read("room", "").toString();
         mCode = store.read("position", "").toString();
         try {

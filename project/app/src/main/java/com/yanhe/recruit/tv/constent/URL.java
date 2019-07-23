@@ -2,10 +2,10 @@ package com.yanhe.recruit.tv.constent;
 
 public class URL {
     //socket.io 地址
-    public static final String SOCKET_HOST = "http://192.168.0.101:3000";
+    public static final String SOCKET_HOST = "http://192.168.0.33:3000";
 
 
-    public static final String API_URL = "http://192.168.0.101:3000/api/";
+    public static final String API_URL = "http://192.168.0.33:3000/api/";
 
     // 服务器端app版本文件存放路径
     public static final String APP_VER_URL = "";

@@ -19,6 +19,7 @@ import com.yanhe.recruit.tv.CompanyBannerView;
 import com.yanhe.recruit.tv.R;
 import com.yanhe.recruit.tv.manage.LocalStoreManager;
 import com.yanhe.recruit.tv.server.inf.HttpResult;
+import com.yanhe.recruit.tv.server.type.data.CompanyAndStationsData;
 import com.yanhe.recruit.tv.server.type.data.CompanyData;
 import com.yanhe.recruit.tv.server.type.data.RecruitmentData;
 import com.yanhe.recruit.tv.server.type.input.RecruitmentInput;
@@ -120,6 +121,7 @@ public class CompanyFragment extends Fragment {
     void initData(){
         LocalStoreManager store = LocalStoreManager.getInstance();
         Gson gson = new Gson();
+        Logger.d("========>context,%s",context);
         if(StringUtils.isEmpty(context)){
             companyData = gson.fromJson(store.read("companyData", null).toString(),CompanyData.class);
             if(companyData!=null){
@@ -132,14 +134,9 @@ public class CompanyFragment extends Fragment {
                 QueryById();
             }
         }else{
-            JSONObject data = gson.fromJson(context, JSONObject.class);
-            try {
-                companyData = gson.fromJson(data.get("company").toString(),CompanyData.class) ;
-                RecruitmentData[] stations = gson.fromJson(data.get("stations").toString(), RecruitmentData[].class);
-                recruitmentDatas = Arrays.asList(stations);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            CompanyAndStationsData data = gson.fromJson(context, CompanyAndStationsData.class);
+            companyData = data.getCompany() ;
+            recruitmentDatas = Arrays.asList(data.getStations());
             company_name.setText(companyData.getName());
             tv_contact.setText(companyData.getContent());
             tv_email.setText(companyData.getEmail());
