@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,14 +24,14 @@ import com.yanhe.recruit.tv.R;
 import com.yanhe.recruit.tv.constent.BroadcastActions;
 import com.yanhe.recruit.tv.manage.LocalStoreManager;
 import com.yanhe.recruit.tv.server.type.data.ImageUrlData;
+import com.yanhe.recruit.tv.utils.MyTimeTask;
 import com.yanhe.recruit.tv.utils.RotateTransformation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.TimerTask;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
-import cn.bingoogolapple.bgabanner.transformer.TransitionEffect;
 
 /**
  * 广告图片
@@ -51,6 +52,8 @@ public class ImageAdFragment extends Fragment {
     private String timeout = "";
     private String imgs = "";
     private ImageUrlData[] imageUrlDatas;
+    private static final int TIMER = 999;
+    private MyTimeTask task;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,64 +125,93 @@ public class ImageAdFragment extends Fragment {
             }
         });
         imageAdBanner.setData(list,null);
-        /**时长*/
-        new Handler().postDelayed(new Runnable() {
+        /**定时*/
+        setTimer();
+    }
+    private void setTimer(){
+        task =new MyTimeTask(Long.valueOf(timeout), new TimerTask() {
             @Override
-            public void run () {
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                //getActivity().getSupportFragmentManager().popBackStack();
-                LocalStoreManager store = LocalStoreManager.getInstance();
-                String previousPage = store.read("previousPage", "").toString();
-                Logger.d("========>previousPage: %s",previousPage);
-                //previousPage = BroadcastActions.URL_SHOWING_RQ_MSG;
-                switch (previousPage){
-                   case BroadcastActions.NEED_CONFIG_MSG:
-                        getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fl_client, new ConfigFragment())
-                            .addToBackStack(null)
-                            .commit();
-                       break;
-                    case BroadcastActions.POSITION_RECRUIT_RQ_MSG:
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fl_client, new PositionRecruitRQFragment())
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                    case BroadcastActions.OFFLINE_SIGNUP_RQ_MSG:
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fl_client, new OfflineSignupRQFragment())
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                    case BroadcastActions.COMPANY_SHOWING_RQ_MSG:
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fl_client, new CompanyFragment())
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                    case BroadcastActions.URL_SHOWING_RQ_MSG:
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fl_client, new IntentFragment())
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                   default:
-                       getActivity().getSupportFragmentManager()
-                               .beginTransaction()
-                               .replace(R.id.fl_client, new PositionRecruitRQFragment())
-                               .addToBackStack(null)
-                               .commit();
-                       break;
-                }
-                }
-        }, Integer.valueOf(timeout));
+            public void run() {
+                mHandler.sendEmptyMessage(TIMER);
+                //或者发广播，启动服务都是可以的
+            }
+        });
+        task.start();
     }
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case TIMER:
+                    //在此执行定时操作
+                    pageJump();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void stopTimer(){
+        task.stop();
+    }
+
+
+
+    private void pageJump() {
+        LocalStoreManager store = LocalStoreManager.getInstance();
+        String previousPage = store.read("previousPage", "").toString();
+        Logger.d("========>previousPage: %s", previousPage);
+        //previousPage = BroadcastActions.URL_SHOWING_RQ_MSG;
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        stopTimer();
+        switch (previousPage) {
+            case BroadcastActions.NEED_CONFIG_MSG:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new ConfigFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BroadcastActions.POSITION_RECRUIT_RQ_MSG:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new PositionRecruitRQFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BroadcastActions.OFFLINE_SIGNUP_RQ_MSG:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new OfflineSignupRQFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BroadcastActions.COMPANY_SHOWING_RQ_MSG:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new CompanyFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BroadcastActions.URL_SHOWING_RQ_MSG:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new IntentFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            default:
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_client, new PositionRecruitRQFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -189,5 +221,7 @@ public class ImageAdFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        stopTimer();
     }
 }
